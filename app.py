@@ -24,11 +24,11 @@ def predict(image, descriptions):
 
 # Streamlit app
 def main():
-    st.title("Image understanding model test")
+    st.title("Image Understanding Model Test")
 
     # Instructions for the user
     st.markdown("---")
-    st.markdown("### Upload an image to test how well the model understands it")
+    st.markdown("### Upload an Image to Test How Well the Model Understands It")
 
     # Upload image through Streamlit with a unique key
     uploaded_image = st.file_uploader("Upload an image...", type=["jpg", "png", "jpeg"], key="uploaded_image")
@@ -63,6 +63,8 @@ def main():
 
                 # Display progress bar for the highest probability
                 st.progress(float(best_prob))
+            else:
+                st.warning("Please provide all three descriptions.")
 
 if __name__ == "__main__":
     main()
