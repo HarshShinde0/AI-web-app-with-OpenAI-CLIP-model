@@ -1,18 +1,25 @@
 import streamlit as st
+import torch
+import clip
 from PIL import Image
 import numpy as np
 
-
-# Load CLIP model and processor
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+# Load CLIP model and preprocessing
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model, preprocess = clip.load("ViT-B/32", device=device)
 
 # Function to predict descriptions and probabilities
 def predict(image, descriptions):
-    inputs = processor(text=descriptions, images=image, return_tensors="pt", padding=True)
-    outputs = model(**inputs)
-    logits_per_image = outputs.logits_per_image
-    probs = logits_per_image.softmax(dim=-1).detach().numpy()
+    image = preprocess(image).unsqueeze(0).to(device)
+    text = clip.tokenize(descriptions).to(device)
+
+    with torch.no_grad():
+        image_features = model.encode_image(image)
+        text_features = model.encode_text(text)
+
+        logits_per_image, logits_per_text = model(image, text)
+        probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+
     return descriptions[np.argmax(probs)], np.max(probs)
 
 # Streamlit app
@@ -48,7 +55,7 @@ def main():
         if st.button("Predict"):
             if all(descriptions):
                 # Make predictions
-                best_description, best_prob = predict([pil_image], descriptions)
+                best_description, best_prob = predict(pil_image, descriptions)
 
                 # Display the highest probability description and its probability
                 st.write(f"**Best Description:** {best_description}")
