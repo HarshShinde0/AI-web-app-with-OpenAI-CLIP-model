@@ -1,3 +1,7 @@
+!pip install torch
+
+
+
 import streamlit as st
 import torch
 import clip
