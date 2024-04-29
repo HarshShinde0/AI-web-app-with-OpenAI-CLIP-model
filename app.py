@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 import numpy as np
-from transformers import CLIPProcessor, CLIPModel
+
 
 # Load CLIP model and processor
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
