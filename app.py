@@ -4,6 +4,7 @@ import clip
 from PIL import Image
 import numpy as np
 
+
 # Load CLIP model and preprocessing
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
